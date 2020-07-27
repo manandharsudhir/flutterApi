@@ -18,7 +18,6 @@ class _EmployeState extends State<Employe> {
 
   @override
   void didChangeDependencies() {
-    print("hello");
     if (isInit) {
       setState(() {
         isLoading = true;
@@ -33,7 +32,7 @@ class _EmployeState extends State<Employe> {
     super.didChangeDependencies();
   }
 
-  Future<void> _refresh(BuildContext context, String id) async {
+  Future<void> _refresh(BuildContext context, int id) async {
     await Provider.of<EmployeProvider>(context).getLatestUpdate(id);
   }
 
@@ -144,18 +143,15 @@ class _EmployeState extends State<Employe> {
                   children: <Widget>[
                     TextField(
                       controller: firstName,
-                      decoration:
-                      InputDecoration(labelText: 'First Name'),
+                      decoration: InputDecoration(labelText: 'First Name'),
                     ),
                     TextField(
                       controller: lastName,
-                      decoration:
-                      InputDecoration(labelText: 'Last Name'),
+                      decoration: InputDecoration(labelText: 'Last Name'),
                     ),
                     TextField(
                       controller: salary,
-                      decoration:
-                      InputDecoration(labelText: 'Salary'),
+                      decoration: InputDecoration(labelText: 'Salary'),
                     ),
                     FlatButton(
                       onPressed: () {

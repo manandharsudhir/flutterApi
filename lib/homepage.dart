@@ -37,6 +37,7 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
+  List<Department> loadedDepartment;
   @override
   void didChangeDependencies() {
     if (isInit) {
@@ -48,7 +49,7 @@ class _HomepageState extends State<Homepage> {
           isLoading = false;
           hasError = false;
         });
-      }).catchError((error) {
+      }).catchError((_) {
         setState(() {
           isLoading = false;
           hasError = true;
@@ -79,7 +80,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     final departments = Provider.of<DepartmentProvider>(context);
-    final loadedDepartment = departments.item;
+    loadedDepartment = departments.item;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => showModalBottomSheet(
@@ -95,8 +96,7 @@ class _HomepageState extends State<Homepage> {
                       ),
                       TextField(
                         controller: subtitleController,
-                        decoration:
-                        InputDecoration(labelText: 'Description'),
+                        decoration: InputDecoration(labelText: 'Description'),
                       ),
                       FlatButton(
                           onPressed: () {
@@ -151,7 +151,7 @@ class _HomepageState extends State<Homepage> {
                           child: Card(
                             child: ListTile(
                                 leading: CircleAvatar(
-                                  child: Text(loadedDepartment[index].id),
+                                  child: Text('${loadedDepartment[index].id}'),
                                 ),
                                 title: Text(loadedDepartment[index].name == null
                                     ? ''

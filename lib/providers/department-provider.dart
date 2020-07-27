@@ -21,22 +21,18 @@ class DepartmentProvider with ChangeNotifier {
   Future<void> getDepartment() async {
     try {
       final response = await http.get(url);
-      final extractedData = json.decode(response.body)["data"] as List;
-      final List<Department> loadedDepartments = [];
-      extractedData.forEach((item) {
-        loadedDepartments.add(Department(
-            id: item["id"].toString(),
-            name: item["name"],
-            description: item["description"]));
-      });
-      _items = loadedDepartments;
+      Map<String, dynamic> extractedData = json.decode(response.body);
+
+      _items = DepartmentList.fromJson(extractedData['data']).department;
+      print(_items[0].name);
       notifyListeners();
     } catch (error) {
+      print(error);
       throw error;
     }
   }
-
-  Future<void> updateDepartment(String id, Department newdep) async {
+samsung
+  Future<void> updateDepartment(int id, Department newdep) async {
     final depindex = _items.indexWhere((item) => item.id == id);
     String _existingname = _items[depindex].name;
     String _exisitingDes = _items[depindex].description;
@@ -75,7 +71,7 @@ class DepartmentProvider with ChangeNotifier {
             'description': dep.description,
           }));
       _items.add(Department(
-          id: '${json.decode(response.body)['id']}',
+          id: json.decode(response.body)['id'],
           name: dep.name,
           description: dep.description));
       notifyListeners();
@@ -84,7 +80,7 @@ class DepartmentProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteDepartment(String id) async {
+  Future<void> deleteDepartment(int id) async {
     String url =
         'https://employee-crud-node-list.herokuapp.com/api/departments/$id';
     final existingDepartmentIndex = _items.indexWhere((item) => item.id == id);

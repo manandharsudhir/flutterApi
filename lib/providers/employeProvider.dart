@@ -18,9 +18,9 @@ class EmployeProvider with ChangeNotifier {
     final List<EmployeModel> loadedEmploye = [];
     extractedData.forEach((item) {
       loadedEmploye.add(EmployeModel(
-          id: item["id"].toString(),
+          id: item["id"],
           department: Department(
-              id: item["department"]["id"].toString(),
+              id: item["department"]["id"],
               name: item["department"]["name"],
               description: item["department"]["description"]),
           firstName: item["firstName"],
@@ -32,7 +32,7 @@ class EmployeProvider with ChangeNotifier {
   }
 
   List<EmployeModel> dep = [];
-  void findByDepartment(String id) {
+  void findByDepartment(int id) {
     List<EmployeModel> newDep = [];
     _items.forEach((item) {
       if (item.department.id == id) {
@@ -43,7 +43,7 @@ class EmployeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getLatestUpdate(String id) async {
+  Future<void> getLatestUpdate(int id) async {
     await getEmploye();
     List<EmployeModel> newDep = [];
     _items.forEach((item) {
@@ -64,14 +64,14 @@ class EmployeProvider with ChangeNotifier {
           'firstName': employe.firstName,
           'lastName': employe.lastName,
           'salary': employe.salary,
-          'department': {'id': int.parse(employe.department.id)}
+          'department': {'id': employe.department.id}
         }));
     print(response.body);
     getLatestUpdate(employe.department.id);
     notifyListeners();
   }
 
-  Future<void> updateEmploye(String id, EmployeModel emp) async {
+  Future<void> updateEmploye(int id, EmployeModel emp) async {
     final depindex = dep.indexWhere((item) => item.id == id);
     if (depindex >= 0) {
       final url =
@@ -81,10 +81,10 @@ class EmployeProvider with ChangeNotifier {
         headers: {'Content-Type': 'application/json'},
         body: json.encode(
           {
-            'id': int.parse(id),
+            'id': id,
             'firstName': emp.firstName,
             'lastName': emp.lastName,
-            'department': {'id': int.parse(emp.department.id)}
+            'department': {'id': emp.department.id}
           },
         ),
       );
@@ -93,7 +93,7 @@ class EmployeProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteEmploye(String id, index) async {
+  Future<void> deleteEmploye(int id, index) async {
     dep.removeAt(index);
     notifyListeners();
     String url =

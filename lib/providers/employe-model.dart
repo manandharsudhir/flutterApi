@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterapi/providers/department-model.dart';
 
 class EmployeModel {
-  final String id;
+  final int id;
   final String firstName;
   final String lastName;
   final String salary;
