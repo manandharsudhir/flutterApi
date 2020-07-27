@@ -31,7 +31,7 @@ class DepartmentProvider with ChangeNotifier {
       throw error;
     }
   }
-samsung
+
   Future<void> updateDepartment(int id, Department newdep) async {
     final depindex = _items.indexWhere((item) => item.id == id);
     String _existingname = _items[depindex].name;
