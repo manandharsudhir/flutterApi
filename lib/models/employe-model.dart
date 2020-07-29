@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapi/providers/department-model.dart';
+import 'package:flutterapi/models/department-model.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'employe-model.g.dart';
+
+@JsonSerializable()
 class EmployeModel {
   final int id;
   final String firstName;
@@ -15,4 +19,9 @@ class EmployeModel {
     @required this.lastName,
     @required this.salary,
   });
+
+  factory EmployeModel.fromJson(Map<String, dynamic> json) =>
+      _$EmployeModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EmployeModelToJson(this);
 }

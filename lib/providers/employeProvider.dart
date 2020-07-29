@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapi/providers/department-model.dart';
-import 'package:flutterapi/providers/employe-model.dart';
+import 'package:flutterapi/models/department-model.dart';
+import 'package:flutterapi/models/employe-model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

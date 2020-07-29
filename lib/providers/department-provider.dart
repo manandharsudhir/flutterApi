@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutterapi/providers/department-model.dart';
+import 'package:flutterapi/models/department-model.dart';
 import 'package:http/http.dart' as http;
 
 class DepartmentProvider with ChangeNotifier {
@@ -22,8 +22,8 @@ class DepartmentProvider with ChangeNotifier {
     try {
       final response = await http.get(url);
       Map<String, dynamic> extractedData = json.decode(response.body);
-
-      _items = DepartmentList.fromJson(extractedData['data']).department;
+      List<dynamic> department = extractedData['data'];
+      _items = department.map((json) => Department.fromJson(json)).toList();
       print(_items[0].name);
       notifyListeners();
     } catch (error) {

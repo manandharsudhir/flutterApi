@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapi/providers/department-model.dart';
-import 'package:flutterapi/providers/employe-model.dart';
+import 'package:flutterapi/models/department-model.dart';
+import 'package:flutterapi/models/employe-model.dart';
 import './providers/department-provider.dart';
 import 'package:provider/provider.dart';
 import './providers/employeProvider.dart';
