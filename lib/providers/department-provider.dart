@@ -24,7 +24,6 @@ class DepartmentProvider with ChangeNotifier {
       Map<String, dynamic> extractedData = json.decode(response.body);
       List<dynamic> department = extractedData['data'];
       _items = department.map((json) => Department.fromJson(json)).toList();
-      print(_items[0].name);
       notifyListeners();
     } catch (error) {
       print(error);
@@ -45,11 +44,7 @@ class DepartmentProvider with ChangeNotifier {
             "https://employee-crud-node-list.herokuapp.com/api/departments/$id";
         await http.put(url,
             headers: {'Content-Type': 'application/json'},
-            body: json.encode({
-              'id': id,
-              'name': newdep.name,
-              'description': newdep.description,
-            }));
+            body: json.encode(newdep));
         _existingname = null;
         _exisitingDes = null;
         notifyListeners();
@@ -64,16 +59,10 @@ class DepartmentProvider with ChangeNotifier {
 
   Future<void> addDepartment(Department dep) async {
     try {
-      final response = await http.post(url,
+      await http.post(url,
           headers: {'Content-Type': 'application/json'},
-          body: json.encode({
-            'name': dep.name,
-            'description': dep.description,
-          }));
-      _items.add(Department(
-          id: json.decode(response.body)['id'],
-          name: dep.name,
-          description: dep.description));
+          body: json.encode(dep));
+
       notifyListeners();
     } catch (error) {
       throw error;

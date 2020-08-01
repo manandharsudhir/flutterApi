@@ -14,7 +14,7 @@ EmployeModel _$EmployeModelFromJson(Map<String, dynamic> json) {
         : Department.fromJson(json['department'] as Map<String, dynamic>),
     firstName: json['firstName'] as String,
     lastName: json['lastName'] as String,
-    salary: json['salary'] as String,
+    salary: json['salary'] as int,
   );
 }
 

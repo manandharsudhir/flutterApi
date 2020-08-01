@@ -6,14 +6,14 @@ part 'employe-model.g.dart';
 
 @JsonSerializable()
 class EmployeModel {
-  final int id;
-  final String firstName;
-  final String lastName;
-  final String salary;
-  final Department department;
+  int id;
+  String firstName;
+  String lastName;
+  int salary;
+  Department department;
 
   EmployeModel({
-    @required this.id,
+    this.id,
     @required this.department,
     @required this.firstName,
     @required this.lastName,

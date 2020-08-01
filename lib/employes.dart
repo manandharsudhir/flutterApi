@@ -99,9 +99,10 @@ class _EmployeState extends State<Employe> {
                                                 department: Department(
                                                   id: loadedProduct.id,
                                                 ),
+                                                id: employe.dep[index].id,
                                                 firstName: firstName.text,
                                                 lastName: lastName.text,
-                                                salary: salary.text,
+                                                salary: int.parse(salary.text),
                                               ),
                                             );
                                           },
@@ -162,7 +163,7 @@ class _EmployeState extends State<Employe> {
                             ),
                             firstName: firstName.text,
                             lastName: lastName.text,
-                            salary: salary.text,
+                            salary: int.parse(salary.text),
                           ),
                         );
                         _refresh(context, loadedProduct.id);

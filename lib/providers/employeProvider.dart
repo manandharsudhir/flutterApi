@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapi/employes.dart';
 import 'package:flutterapi/models/department-model.dart';
 import 'package:flutterapi/models/employe-model.dart';
 import 'package:http/http.dart' as http;
@@ -14,20 +16,9 @@ class EmployeProvider with ChangeNotifier {
     const String url =
         "https://employee-crud-node-list.herokuapp.com/api/employees";
     final response = await http.get(url);
-    final extractedData = json.decode(response.body)["data"] as List;
-    final List<EmployeModel> loadedEmploye = [];
-    extractedData.forEach((item) {
-      loadedEmploye.add(EmployeModel(
-          id: item["id"],
-          department: Department(
-              id: item["department"]["id"],
-              name: item["department"]["name"],
-              description: item["department"]["description"]),
-          firstName: item["firstName"],
-          lastName: item["lastName"],
-          salary: item["salary"].toString()));
-    });
-    _items = loadedEmploye;
+    Map<String, dynamic> extractedData = json.decode(response.body);
+    List<dynamic> employes = extractedData['data'];
+    _items = employes.map((employ) => EmployeModel.fromJson(employ)).toList();
     notifyListeners();
   }
 
@@ -60,12 +51,7 @@ class EmployeProvider with ChangeNotifier {
         "https://employee-crud-node-list.herokuapp.com/api/employees";
     final response = await http.post(url,
         headers: {'Content-type': 'application/json'},
-        body: json.encode({
-          'firstName': employe.firstName,
-          'lastName': employe.lastName,
-          'salary': employe.salary,
-          'department': {'id': employe.department.id}
-        }));
+        body: json.encode(employe));
     print(response.body);
     getLatestUpdate(employe.department.id);
     notifyListeners();
@@ -74,19 +60,14 @@ class EmployeProvider with ChangeNotifier {
   Future<void> updateEmploye(int id, EmployeModel emp) async {
     final depindex = dep.indexWhere((item) => item.id == id);
     if (depindex >= 0) {
+      final response = json.encode(emp);
+      print(response);
       final url =
           "https://employee-crud-node-list.herokuapp.com/api/employees/$id";
       await http.put(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: json.encode(
-          {
-            'id': id,
-            'firstName': emp.firstName,
-            'lastName': emp.lastName,
-            'department': {'id': emp.department.id}
-          },
-        ),
+        body: json.encode(emp),
       );
       getLatestUpdate(id);
       notifyListeners();

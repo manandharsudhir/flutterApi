@@ -196,6 +196,8 @@ class _HomepageState extends State<Homepage> {
                                                                             index]
                                                                         .id,
                                                                     Department(
+                                                                        id: loadedDepartment[index]
+                                                                            .id,
                                                                         name: titleController
                                                                             .text,
                                                                         description:
