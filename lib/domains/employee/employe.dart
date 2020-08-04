@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapi/models/department-model.dart';
+import 'package:flutterapi/domains/department/department.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'employe-model.g.dart';
+part 'employe.g.dart';
 
 @JsonSerializable()
 class EmployeModel {

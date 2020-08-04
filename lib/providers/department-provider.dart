@@ -1,18 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutterapi/models/department-model.dart';
+import 'package:flutterapi/domains/department/department.dart';
 import 'package:http/http.dart' as http;
 
 class DepartmentProvider with ChangeNotifier {
-  List<Department> _items = [];
+  List<Department> _departments = [];
 
-  List<Department> get item {
-    return [..._items];
+  List<Department> get departments {
+    return _departments;
   }
 
   Department findById(String name) {
-    return _items.firstWhere((dep) => dep.name == name);
+    return _departments.firstWhere((dep) => dep.name == name);
   }
 
   static const String url =
@@ -23,7 +23,8 @@ class DepartmentProvider with ChangeNotifier {
       final response = await http.get(url);
       Map<String, dynamic> extractedData = json.decode(response.body);
       List<dynamic> department = extractedData['data'];
-      _items = department.map((json) => Department.fromJson(json)).toList();
+      _departments =
+          department.map((json) => Department.fromJson(json)).toList();
       notifyListeners();
     } catch (error) {
       print(error);
@@ -32,11 +33,11 @@ class DepartmentProvider with ChangeNotifier {
   }
 
   Future<void> updateDepartment(int id, Department newdep) async {
-    final depindex = _items.indexWhere((item) => item.id == id);
-    String _existingname = _items[depindex].name;
-    String _exisitingDes = _items[depindex].description;
-    _items[depindex].name = newdep.name;
-    _items[depindex].description = newdep.description;
+    final depindex = _departments.indexWhere((item) => item.id == id);
+    String _existingname = _departments[depindex].name;
+    String _exisitingDes = _departments[depindex].description;
+    _departments[depindex].name = newdep.name;
+    _departments[depindex].description = newdep.description;
     notifyListeners();
     try {
       if (depindex >= 0) {
@@ -50,8 +51,8 @@ class DepartmentProvider with ChangeNotifier {
         notifyListeners();
       }
     } catch (error) {
-      _items[depindex].name = _existingname;
-      _items[depindex].description = _exisitingDes;
+      _departments[depindex].name = _existingname;
+      _departments[depindex].description = _exisitingDes;
       notifyListeners();
       throw error;
     }
@@ -72,15 +73,16 @@ class DepartmentProvider with ChangeNotifier {
   Future<void> deleteDepartment(int id) async {
     String url =
         'https://employee-crud-node-list.herokuapp.com/api/departments/$id';
-    final existingDepartmentIndex = _items.indexWhere((item) => item.id == id);
-    var existingDepartment = _items[existingDepartmentIndex];
-    _items.removeAt(existingDepartmentIndex);
+    final existingDepartmentIndex =
+        _departments.indexWhere((item) => item.id == id);
+    var existingDepartment = _departments[existingDepartmentIndex];
+    _departments.removeAt(existingDepartmentIndex);
     notifyListeners();
     try {
       await http.delete(url);
       existingDepartment = null;
     } catch (error) {
-      _items.insert(existingDepartmentIndex, existingDepartment);
+      _departments.insert(existingDepartmentIndex, existingDepartment);
       notifyListeners();
       throw error;
     }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapi/employes.dart';
-import 'package:flutterapi/models/department-model.dart';
+import 'package:flutterapi/domains/department/department.dart';
 import 'package:provider/provider.dart';
-import './providers/department-provider.dart';
 import './providers/employeProvider.dart';
+import 'domains/department/department-service.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -44,7 +44,7 @@ class _HomepageState extends State<Homepage> {
       setState(() {
         isLoading = true;
       });
-      Provider.of<DepartmentProvider>(context).getDepartment().then((_) {
+      Provider.of<DepartmentService>(context).getDepartment().then((_) {
         setState(() {
           isLoading = false;
           hasError = false;
@@ -62,7 +62,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> _refresh(BuildContext context) async {
-    await Provider.of<DepartmentProvider>(context).getDepartment().then((_) {
+    await Provider.of<DepartmentService>(context).getDepartment().then((_) {
       setState(() {
         hasError = false;
       });
@@ -79,8 +79,8 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    final departments = Provider.of<DepartmentProvider>(context);
-    loadedDepartment = departments.item;
+    final departments = Provider.of<DepartmentService>(context);
+    loadedDepartment = departments.departments;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => showModalBottomSheet(
@@ -191,17 +191,15 @@ class _HomepageState extends State<Homepage> {
                                                                     context)
                                                                 .pop();
                                                             departments
-                                                                .updateDepartment(
-                                                                    loadedDepartment[
+                                                                .updateDepartment(Department(
+                                                                    id: loadedDepartment[
                                                                             index]
                                                                         .id,
-                                                                    Department(
-                                                                        id: loadedDepartment[index]
-                                                                            .id,
-                                                                        name: titleController
-                                                                            .text,
-                                                                        description:
-                                                                            subtitleController.text))
+                                                                    name: titleController
+                                                                        .text,
+                                                                    description:
+                                                                        subtitleController
+                                                                            .text))
                                                                 .catchError(
                                                               (_) {
                                                                 error(context);

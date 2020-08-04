@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapi/domains/department/department-service.dart';
 import 'package:flutterapi/employes.dart';
 import 'package:flutterapi/providers/department-provider.dart';
 import 'package:flutterapi/providers/employeProvider.dart';
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
-          value: DepartmentProvider(),
+          value: DepartmentService(),
         ),
         ChangeNotifierProvider.value(
           value: EmployeProvider(),

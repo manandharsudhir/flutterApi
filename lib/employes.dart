@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapi/models/department-model.dart';
-import 'package:flutterapi/models/employe-model.dart';
-import './providers/department-provider.dart';
+import 'package:flutterapi/domains/department/department.dart';
+import 'package:flutterapi/domains/employee/employe.dart';
+import './domains/department/department-service.dart';
 import 'package:provider/provider.dart';
 import './providers/employeProvider.dart';
 
@@ -39,9 +39,8 @@ class _EmployeState extends State<Employe> {
   @override
   Widget build(BuildContext context) {
     final productId = ModalRoute.of(context).settings.arguments as String;
-    final loadedProduct =
-        Provider.of<DepartmentProvider>(context, listen: false)
-            .findById(productId);
+    final loadedProduct = Provider.of<DepartmentService>(context, listen: false)
+        .findById(productId);
     final employe = Provider.of<EmployeProvider>(context);
     TextEditingController firstName = TextEditingController();
 

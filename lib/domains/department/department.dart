@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'department-model.g.dart';
+part 'department.g.dart';
 
 @JsonSerializable()
 class Department {

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'department-model.dart';
+part of 'department.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
