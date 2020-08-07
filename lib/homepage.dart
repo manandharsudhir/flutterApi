@@ -44,7 +44,7 @@ class _HomepageState extends State<Homepage> {
       setState(() {
         isLoading = true;
       });
-      Provider.of<DepartmentService>(context).getDepartment().then((_) {
+      Provider.of<DepartmentService>(context).findAll().then((_) {
         setState(() {
           isLoading = false;
         });
@@ -61,7 +61,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> _refresh(BuildContext context) async {
-    await Provider.of<DepartmentService>(context).getDepartment().then((_) {
+    await Provider.of<DepartmentService>(context).findAll().then((_) {
       setState(() {
         hasError = false;
       });
@@ -104,7 +104,7 @@ class _HomepageState extends State<Homepage> {
                               isLoading = true;
                             });
                             try {
-                              await departments.addDepartment(Department(
+                              await departments.save(Department(
                                   name: titleController.text,
                                   description: subtitleController.text));
                             } catch (_) {
@@ -195,7 +195,7 @@ class _HomepageState extends State<Homepage> {
                                                               isLoading = true;
                                                             });
                                                             try {
-                                                              await departments.updateDepartment(Department(
+                                                              await departments.update(Department(
                                                                   id: loadedDepartment[
                                                                           index]
                                                                       .id,
@@ -223,10 +223,8 @@ class _HomepageState extends State<Homepage> {
                                           icon: Icon(Icons.delete),
                                           onPressed: () async {
                                             try {
-                                              await departments
-                                                  .deleteDepartment(
-                                                      loadedDepartment[index]
-                                                          .id);
+                                              await departments.delete(
+                                                  loadedDepartment[index].id);
                                               Scaffold.of(context)
                                                   .hideCurrentSnackBar();
                                               Scaffold.of(context).showSnackBar(

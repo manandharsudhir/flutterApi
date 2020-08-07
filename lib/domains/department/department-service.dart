@@ -10,7 +10,7 @@ class DepartmentService with ChangeNotifier {
   }
 
   DepartmentDao departmentDao = new DepartmentDao();
-  Future<void> getDepartment() async {
+  Future<void> findAll() async {
     try {
       _departments = await departmentDao.findAll();
       notifyListeners();
@@ -23,25 +23,25 @@ class DepartmentService with ChangeNotifier {
     return _departments.firstWhere((dep) => dep.name == name);
   }
 
-  Future<void> updateDepartment(Department newdep) async {
+  Future<void> update(Department newdep) async {
     try {
       await departmentDao.update(newdep);
-      await getDepartment();
+      await findAll();
     } catch (error) {
       throw error;
     }
   }
 
-  Future<void> addDepartment(Department dep) async {
+  Future<void> save(Department dep) async {
     try {
       await departmentDao.save(dep);
-      await getDepartment();
+      await findAll();
     } catch (error) {
       throw error;
     }
   }
 
-  Future<void> deleteDepartment(int id) async {
-    await departmentDao.deleteDepartment(id);
+  Future<void> delete(int id) async {
+    await departmentDao.delete(id);
   }
 }

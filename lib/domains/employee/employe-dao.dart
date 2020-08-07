@@ -43,7 +43,7 @@ class EmployeeDao {
     }
   }
 
-  Future<void> deleteDepartment(int id) async {
+  Future<void> delete(int id) async {
     try {
       await http.delete('$url/$id');
     } catch (error) {

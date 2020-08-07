@@ -62,6 +62,6 @@ class EmployeeService with ChangeNotifier {
   }
 
   Future<void> delete(int id, index) async {
-    await employeeDao.deleteDepartment(id);
+    await employeeDao.delete(id);
   }
 }
