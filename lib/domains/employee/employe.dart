@@ -5,14 +5,14 @@ import 'package:json_annotation/json_annotation.dart';
 part 'employe.g.dart';
 
 @JsonSerializable()
-class EmployeModel {
+class Employee {
   int id;
   String firstName;
   String lastName;
   int salary;
   Department department;
 
-  EmployeModel({
+  Employee({
     this.id,
     @required this.department,
     @required this.firstName,
@@ -20,8 +20,8 @@ class EmployeModel {
     @required this.salary,
   });
 
-  factory EmployeModel.fromJson(Map<String, dynamic> json) =>
-      _$EmployeModelFromJson(json);
+  factory Employee.fromJson(Map<String, dynamic> json) =>
+      _$EmployeeFromJson(json);
 
-  Map<String, dynamic> toJson() => _$EmployeModelToJson(this);
+  Map<String, dynamic> toJson() => _$EmployeeToJson(this);
 }

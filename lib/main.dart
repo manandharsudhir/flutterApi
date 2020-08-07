@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterapi/domains/department/department-service.dart';
 import 'package:flutterapi/employes.dart';
-import 'package:flutterapi/providers/department-provider.dart';
-import 'package:flutterapi/providers/employeProvider.dart';
+import './domains/employee/employe-service.dart';
 import './homepage.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
           value: DepartmentService(),
         ),
         ChangeNotifierProvider.value(
-          value: EmployeProvider(),
+          value: EmployeeService(),
         ),
       ],
       child: MaterialApp(

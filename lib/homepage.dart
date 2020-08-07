@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterapi/employes.dart';
 import 'package:flutterapi/domains/department/department.dart';
 import 'package:provider/provider.dart';
-import './providers/employeProvider.dart';
+import './domains/employee/employe-service.dart';
 import 'domains/department/department-service.dart';
 
 class Homepage extends StatefulWidget {
@@ -47,7 +47,6 @@ class _HomepageState extends State<Homepage> {
       Provider.of<DepartmentService>(context).getDepartment().then((_) {
         setState(() {
           isLoading = false;
-          hasError = false;
         });
       }).catchError((_) {
         setState(() {
@@ -99,22 +98,24 @@ class _HomepageState extends State<Homepage> {
                         decoration: InputDecoration(labelText: 'Description'),
                       ),
                       FlatButton(
-                          onPressed: () {
+                          onPressed: () async {
                             Navigator.of(context).pop();
                             setState(() {
                               isLoading = true;
                             });
-                            departments
-                                .addDepartment(Department(
-                                    name: titleController.text,
-                                    description: subtitleController.text))
-                                .then((_) {
+                            try {
+                              await departments.addDepartment(Department(
+                                  name: titleController.text,
+                                  description: subtitleController.text));
+                            } catch (_) {
+                              setState(() {
+                                hasError = true;
+                              });
+                            } finally {
                               setState(() {
                                 isLoading = false;
                               });
-                            }).catchError((_) {
-                              error(context);
-                            });
+                            }
                           },
                           child: Text('submit'))
                     ]),
@@ -145,7 +146,7 @@ class _HomepageState extends State<Homepage> {
                           onTap: () {
                             Navigator.of(context).pushNamed(Employe.routeName,
                                 arguments: loadedDepartment[index].name);
-                            Provider.of<EmployeProvider>(context)
+                            Provider.of<EmployeeService>(context)
                                 .findByDepartment(loadedDepartment[index].id);
                           },
                           child: Card(
@@ -186,25 +187,32 @@ class _HomepageState extends State<Homepage> {
                                                             subtitleController,
                                                       ),
                                                       FlatButton(
-                                                          onPressed: () {
+                                                          onPressed: () async {
                                                             Navigator.of(
                                                                     context)
                                                                 .pop();
-                                                            departments
-                                                                .updateDepartment(Department(
-                                                                    id: loadedDepartment[
-                                                                            index]
-                                                                        .id,
-                                                                    name: titleController
-                                                                        .text,
-                                                                    description:
-                                                                        subtitleController
-                                                                            .text))
-                                                                .catchError(
-                                                              (_) {
-                                                                error(context);
-                                                              },
-                                                            );
+                                                            setState(() {
+                                                              isLoading = true;
+                                                            });
+                                                            try {
+                                                              await departments.updateDepartment(Department(
+                                                                  id: loadedDepartment[
+                                                                          index]
+                                                                      .id,
+                                                                  name:
+                                                                      titleController
+                                                                          .text,
+                                                                  description:
+                                                                      subtitleController
+                                                                          .text));
+                                                            } catch (_) {
+                                                              hasError = true;
+                                                            } finally {
+                                                              setState(() {
+                                                                isLoading =
+                                                                    false;
+                                                              });
+                                                            }
                                                           },
                                                           child: Text('submit'))
                                                     ]),

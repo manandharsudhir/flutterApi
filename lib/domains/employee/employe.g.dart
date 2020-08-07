@@ -6,8 +6,8 @@ part of 'employe.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-EmployeModel _$EmployeModelFromJson(Map<String, dynamic> json) {
-  return EmployeModel(
+Employee _$EmployeeFromJson(Map<String, dynamic> json) {
+  return Employee(
     id: json['id'] as int,
     department: json['department'] == null
         ? null
@@ -18,8 +18,7 @@ EmployeModel _$EmployeModelFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$EmployeModelToJson(EmployeModel instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$EmployeeToJson(Employee instance) => <String, dynamic>{
       'id': instance.id,
       'firstName': instance.firstName,
       'lastName': instance.lastName,

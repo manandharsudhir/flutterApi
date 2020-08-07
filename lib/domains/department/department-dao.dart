@@ -8,7 +8,7 @@ class DepartmentDao {
       'https://employee-crud-node-list.herokuapp.com/api/';
   static const String url = "${baseUrl}departments";
 
-  Future<List<Department>> getDepartment() async {
+  Future<List<Department>> findAll() async {
     try {
       final response = await http.get(url);
       Map<String, dynamic> extractedData = json.decode(response.body);
@@ -19,22 +19,27 @@ class DepartmentDao {
     }
   }
 
-  Future<void> updateDepartment(Department newdep) async {
+  Future<Department> update(Department newdep) async {
     try {
-      await http.put("$url/${newdep.id}",
+      final response = await http.put("$url/${newdep.id}",
           headers: {'Content-Type': 'application/json'},
           body: json.encode(newdep));
+      Map<String, dynamic> department = json.decode(response.body)['data'];
+      return Department.fromJson(department);
     } catch (error) {
       throw error;
     }
   }
 
-  Future<void> addDepartment(Department dep) async {
+  Future<Department> save(Department dep) async {
     try {
-      await http.post(url,
+      final response = await http.post(url,
           headers: {'Content-Type': 'application/json'},
           body: json.encode(dep));
+      Map<String, dynamic> department = json.decode(response.body);
+      return Department.fromJson(department);
     } catch (error) {
+      print(error);
       throw error;
     }
   }

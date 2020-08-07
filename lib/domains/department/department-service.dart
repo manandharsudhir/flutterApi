@@ -9,13 +9,10 @@ class DepartmentService with ChangeNotifier {
     return _departments;
   }
 
-  final DepartmentDao departmentDao = DepartmentDao();
-  static const String url =
-      "https://employee-crud-node-list.herokuapp.com/api/departments";
-
+  DepartmentDao departmentDao = new DepartmentDao();
   Future<void> getDepartment() async {
     try {
-      _departments = await departmentDao.getDepartment();
+      _departments = await departmentDao.findAll();
       notifyListeners();
     } catch (error) {
       throw error;
@@ -27,11 +24,21 @@ class DepartmentService with ChangeNotifier {
   }
 
   Future<void> updateDepartment(Department newdep) async {
-    await departmentDao.updateDepartment(newdep);
+    try {
+      await departmentDao.update(newdep);
+      await getDepartment();
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<void> addDepartment(Department dep) async {
-    await departmentDao.addDepartment(dep);
+    try {
+      await departmentDao.save(dep);
+      await getDepartment();
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<void> deleteDepartment(int id) async {

@@ -3,7 +3,7 @@ import 'package:flutterapi/domains/department/department.dart';
 import 'package:flutterapi/domains/employee/employe.dart';
 import './domains/department/department-service.dart';
 import 'package:provider/provider.dart';
-import './providers/employeProvider.dart';
+import './domains/employee/employe-service.dart';
 
 class Employe extends StatefulWidget {
   static const String routeName = './employe';
@@ -15,6 +15,7 @@ class Employe extends StatefulWidget {
 class _EmployeState extends State<Employe> {
   bool isInit = true;
   bool isLoading = false;
+  bool hasError = false;
 
   @override
   void didChangeDependencies() {
@@ -22,9 +23,14 @@ class _EmployeState extends State<Employe> {
       setState(() {
         isLoading = true;
       });
-      Provider.of<EmployeProvider>(context).getEmploye().then((_) {
+      Provider.of<EmployeeService>(context).findAll().then((_) {
         setState(() {
           isLoading = false;
+        });
+      }).catchError((_) {
+        setState(() {
+          isLoading = false;
+          hasError = true;
         });
       });
     }
@@ -33,7 +39,7 @@ class _EmployeState extends State<Employe> {
   }
 
   Future<void> _refresh(BuildContext context, int id) async {
-    await Provider.of<EmployeProvider>(context).getLatestUpdate(id);
+    await Provider.of<EmployeeService>(context).getLatestUpdate(id);
   }
 
   @override
@@ -41,7 +47,7 @@ class _EmployeState extends State<Employe> {
     final productId = ModalRoute.of(context).settings.arguments as String;
     final loadedProduct = Provider.of<DepartmentService>(context, listen: false)
         .findById(productId);
-    final employe = Provider.of<EmployeProvider>(context);
+    final employee = Provider.of<EmployeeService>(context);
     TextEditingController firstName = TextEditingController();
 
     TextEditingController lastName = TextEditingController();
@@ -52,87 +58,112 @@ class _EmployeState extends State<Employe> {
       appBar: AppBar(
         title: Text(loadedProduct.name),
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: () => _refresh(context, loadedProduct.id),
-              child: ListView.builder(
-                itemBuilder: (context, index) => Card(
-                  child: ListTile(
-                    title: Text(
-                        '${employe.dep[index].firstName} ${employe.dep[index].lastName}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(employe.dep[index].department.name),
-                        Text('Salary:Rs${employe.dep[index].salary}'),
-                      ],
-                    ),
-                    trailing: Container(
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: Row(
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () => showModalBottomSheet(
-                                context: (context),
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      children: <Widget>[
-                                        TextField(
-                                          controller: firstName,
-                                        ),
-                                        TextField(
-                                          controller: lastName,
-                                        ),
-                                        TextField(
-                                          controller: salary,
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            employe.updateEmploye(
-                                              employe.dep[index].id,
-                                              EmployeModel(
-                                                department: Department(
-                                                  id: loadedProduct.id,
-                                                ),
-                                                id: employe.dep[index].id,
-                                                firstName: firstName.text,
-                                                lastName: lastName.text,
-                                                salary: int.parse(salary.text),
+      body: hasError
+          ? ListView(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: Center(
+                    child: Text('Oops! Something went wrong'),
+                  ),
+                )
+              ],
+            )
+          : isLoading
+              ? Center(child: CircularProgressIndicator())
+              : RefreshIndicator(
+                  onRefresh: () => _refresh(context, loadedProduct.id),
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => Card(
+                      child: ListTile(
+                        title: Text(
+                            '${employee.dep[index].firstName} ${employee.dep[index].lastName}'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(employee.dep[index].department.name),
+                            Text('Salary:Rs${employee.dep[index].salary}'),
+                          ],
+                        ),
+                        trailing: Container(
+                          width: MediaQuery.of(context).size.width * 0.3,
+                          child: Row(
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.edit),
+                                onPressed: () => showModalBottomSheet(
+                                    context: (context),
+                                    builder: (BuildContext context) {
+                                      return Container(
+                                        padding: EdgeInsets.all(16),
+                                        child: Column(
+                                          children: <Widget>[
+                                            TextField(
+                                              controller: firstName,
+                                            ),
+                                            TextField(
+                                              controller: lastName,
+                                            ),
+                                            TextField(
+                                              controller: salary,
+                                            ),
+                                            FlatButton(
+                                              onPressed: () async {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                try {
+                                                  await employee.update(
+                                                    Employee(
+                                                      department: Department(
+                                                        id: loadedProduct.id,
+                                                      ),
+                                                      id: employee
+                                                          .dep[index].id,
+                                                      firstName: firstName.text,
+                                                      lastName: lastName.text,
+                                                      salary: int.parse(
+                                                          salary.text),
+                                                    ),
+                                                  );
+                                                } catch (_) {
+                                                  setState(() {
+                                                    hasError = true;
+                                                  });
+                                                } finally {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                }
+                                              },
+                                              child: Text(
+                                                'submit',
                                               ),
-                                            );
-                                          },
-                                          child: Text(
-                                            'submit',
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    }),
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.delete),
+                                  onPressed: () {
+                                    employee.delete(
+                                        employee.dep[index].id, index);
+                                    Scaffold.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Delete Successful'),
+                                      ),
+                                    );
+                                  })
+                            ],
                           ),
-                          IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {
-                                employe.deleteEmploye(
-                                    employe.dep[index].id, index);
-                                Scaffold.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Delete Successful'),
-                                  ),
-                                );
-                              })
-                        ],
+                        ),
                       ),
                     ),
+                    itemCount: employee.dep.length,
                   ),
                 ),
-                itemCount: employe.dep.length,
-              ),
-            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showModalBottomSheet(
             context: (context),
@@ -154,18 +185,30 @@ class _EmployeState extends State<Employe> {
                       decoration: InputDecoration(labelText: 'Salary'),
                     ),
                     FlatButton(
-                      onPressed: () {
-                        employe.addEmploye(
-                          EmployeModel(
-                            department: Department(
-                              id: loadedProduct.id,
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        try {
+                          await employee.save(
+                            Employee(
+                              department: Department(
+                                id: loadedProduct.id,
+                              ),
+                              firstName: firstName.text,
+                              lastName: lastName.text,
+                              salary: int.parse(salary.text),
                             ),
-                            firstName: firstName.text,
-                            lastName: lastName.text,
-                            salary: int.parse(salary.text),
-                          ),
-                        );
-                        _refresh(context, loadedProduct.id);
+                          );
+                        } catch (_) {
+                          setState(() {
+                            hasError = true;
+                          });
+                        } finally {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        }
                       },
                       child: Text(
                         'submit',
